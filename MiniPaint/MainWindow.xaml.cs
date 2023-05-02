@@ -183,9 +183,12 @@ namespace MiniPaint
             {
                 lbl_txtBox_content = txtBox.Text;
                 lbl_txtBox.Content = lbl_txtBox_content;
+                lbl_txtBox.HorizontalAlignment = HorizontalAlignment.Center;
+                lbl_txtBox.VerticalAlignment = VerticalAlignment.Center;
 
                 Mycanvas.Children.Remove(txtBox);
                 border.Child = lbl_txtBox;
+                border.BorderBrush = null;
                 Mycanvas.Children.Add(border);
             }
         }
