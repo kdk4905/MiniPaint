@@ -1,0 +1,48 @@
+﻿<Window x:Class="MiniPaint.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MiniPaint"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded"
+        >
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Width="800" Height="30" VerticalAlignment="Top">
+            <MenuItem Header="선">
+                <MenuItem x:Name="mnItemLine" Header="직선"/>
+                <MenuItem x:Name="mnItemPolyline" Header="자유선"/>
+            </MenuItem>
+            <MenuItem Header="도형">
+                <MenuItem x:Name="mnItemRectangle" Header="사각형"/>
+                <MenuItem x:Name="mnItemElipse" Header="원형"/>
+            </MenuItem>
+            <MenuItem x:Name="mnItemText" Header="텍스트">
+                <MenuItem x:Name="menuItem_txtBox" Header="텍스트 박스 생성"/>
+                <MenuItem x:Name="menuItem_Font_Italic" Header="폰트 변경 이텔릭체"/>
+                <MenuItem x:Name="menuItem_Font_Bold" Header="폰트 변경 볼드체"/>
+                <MenuItem x:Name="menuItem_Font_SizeUp" Header="폰트 사이즈 변경 +10"/>
+                <MenuItem x:Name="menuItem_Font_SizeDown" Header="폰트 사이즈 변경 -10"/>
+            </MenuItem>
+            <MenuItem x:Name="menuItem_Image" Header="이미지">
+                <MenuItem x:Name="mnItemImageSelect" Header="이미지 선택"/>
+                <MenuItem x:Name="mnItemImageSave" Header="이미지 저장"/>
+            </MenuItem>
+            <MenuItem x:Name="menuItem_Remove" Header="삭제">
+                
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Canvas x:Name="Mycanvas">
+                <Border Width=" 50" Height="50" Canvas.Left="375" Canvas.Top="177" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Rectangle Width="50" Height="50"/>
+                </Border>
+                <Border>
+                    <Line X1="0" X2="50" Y1="0" Y2="50"/>
+                </Border>
+            </Canvas>
+        </Grid>
+    </DockPanel>
+
+</Window>
