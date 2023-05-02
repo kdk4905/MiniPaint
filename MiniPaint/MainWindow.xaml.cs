@@ -195,6 +195,7 @@ namespace MiniPaint
             if (lbl_txtBox.FontStyle == FontStyles.Italic)
             {
                 lbl_txtBox.FontStyle = FontStyles.Normal;
+                //폰트
             }
             else
             {
