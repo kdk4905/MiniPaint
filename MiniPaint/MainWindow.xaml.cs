@@ -462,7 +462,7 @@ namespace MiniPaint
                             border.MouseUp += shape_Released;
 
                             Mycanvas.Children.Remove(border);
-                            Mycanvas.Children.Add(border);
+                            //Mycanvas.Children.Add(border);
 
                             tempEllipse = ellipse;
                         }
@@ -565,12 +565,13 @@ namespace MiniPaint
                         if (ellipse == tempEllipse)
                         {
                             ellipse.Stroke = nowColor;
-                            Mycanvas.Children.Remove(ellipse);
-                            border.Child = ellipse;
-                            border.Width += 10;
-                            border.Height += 10;
-                            Mycanvas.Children.Remove(border);
-                            Mycanvas.Children.Add(border);
+                            ellipse.Fill = nowColor;
+                            //Mycanvas.Children.Remove(ellipse);
+                            //border.Child = ellipse;
+                            //border.Width += 10;
+                            //border.Height += 10;
+                            //Mycanvas.Children.Remove(border);
+                            //Mycanvas.Children.Add(border);
                         }
                         break;
                     case DrawMode.txt:
