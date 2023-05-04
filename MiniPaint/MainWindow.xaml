@@ -34,14 +34,10 @@
             </MenuItem>
         </Menu>
         <Grid>
-            <Canvas x:Name="Mycanvas" Width="500" Height="500">
-                <Border Width=" 50" Height="50" Canvas.Left="375" Canvas.Top="177" HorizontalAlignment="Left" VerticalAlignment="Top">
-                    <Rectangle Width="50" Height="50"/>
-                </Border>
-                <Border>
-                    <Line X1="0" X2="50" Y1="0" Y2="50"/>
-                </Border>
-            </Canvas>
+            <Border Width="600" Height="600" BorderThickness="3" BorderBrush="Black">
+                <Canvas x:Name="Mycanvas" Width="500" Height="500">
+                </Canvas>
+            </Border>
         </Grid>
     </DockPanel>
 

@@ -421,7 +421,7 @@ namespace MiniPaint
                             border.MouseUp += shape_Released;
 
                             Mycanvas.Children.Remove(border);
-                            Mycanvas.Children.Add(border);
+                            //Mycanvas.Children.Add(border);
 
                             tempRect = rect;
                         }
@@ -553,12 +553,13 @@ namespace MiniPaint
                         if (rect == tempRect)
                         {
                             rect.Stroke = nowColor;
-                            Mycanvas.Children.Remove(rect);
-                            border.Child = rect;
-                            border.Width += 10;
-                            border.Height += 10;
-                            Mycanvas.Children.Remove(border);
-                            Mycanvas.Children.Add(border);
+                            rect.Fill = nowColor;
+                            //Mycanvas.Children.Remove(rect);
+                            //border.Child = rect;
+                            //border.Width += 10;
+                            //border.Height += 10;
+                            //Mycanvas.Children.Remove(border);
+                            //Mycanvas.Children.Add(border);
                         }
                         break;
                     case DrawMode.shape_ellipse:
@@ -866,7 +867,7 @@ namespace MiniPaint
             img.BeginInit();
             img.CacheOption = BitmapCacheOption.OnLoad;
             img.CreateOptions = BitmapCreateOptions.DelayCreation;
-            img.DecodePixelWidth = 300;
+            img.DecodePixelWidth = 500;
             img.UriSource = new Uri(imageList.ToString());
             img.EndInit();
             image.Source = img;
