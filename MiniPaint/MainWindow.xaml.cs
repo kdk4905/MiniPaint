@@ -2,25 +2,15 @@
 using MiniPaint.Data;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Converters;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using fileImage = System.Drawing;
 
 namespace MiniPaint
 {
@@ -79,6 +69,7 @@ namespace MiniPaint
         HitType hitType = HitType.NONE; // 히트 타입
         ContentControl cnttControl;
         //이미지 저장
+        private fileImage.Bitmap myBmp;
 
         #endregion
         #region 메인윈도우
@@ -118,6 +109,7 @@ namespace MiniPaint
             Mycanvas.MouseUp += Mycanvas_MouseUp;
             #endregion
             #region 객체 속성
+            Mycanvas.Background = Brushes.White;
             preColor = Brushes.Red;
             nowColor = Brushes.Black;
             #endregion
@@ -236,26 +228,33 @@ namespace MiniPaint
         {
             MyDrawMode = DrawMode.img;
 
-            OpenFileDialog ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() == true)
+            OpenFileDialog openDialog = new OpenFileDialog();
+            if (openDialog.ShowDialog() == true)
             {
-                string fullPath = ofd.FileName;
-                string fileName = ofd.SafeFileName;
-                string path = fullPath.Replace(fileName, "");
-                string[] files = Directory.GetFiles(path);
-                imgList = files.Where(x => x.IndexOf(".jpg", StringComparison.OrdinalIgnoreCase) >= 0
-                                        || x.IndexOf(".png", StringComparison.OrdinalIgnoreCase) >= 0)
-                    .Select(x => x).ToList();
+                if (File.Exists(openDialog.FileName))
+                {
+                    fileImage.Image img = fileImage.Image.FromFile(openDialog.FileName);
+                    fileImage.Bitmap bmp = new fileImage.Bitmap(img);
+                    myBmp = bmp;
+
+                    Image preImage = new Image();
+                    preImage.Source = GetBitmapSourceFromBitmap(bmp);
+                    preImage.Width = 500;
+                    preImage.Height = 500;
+                    preImage.Stretch = Stretch.None;
+                    Mycanvas.Children.Add(preImage);
+                }
             }
-            //이미지 생성
-            CreateImage(imgList);
         }
 
         private void mnItemImageSave_click(object sender, RoutedEventArgs e)
         {
+            myBmp.Save(System.Environment.CurrentDirectory + @"\background.png", ImageFormat.Png);
+            //savePNG(Mycanvas);
+            /*
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)Mycanvas.ActualWidth, (int)Mycanvas.ActualHeight, 96, 96, PixelFormats.Pbgra32);
             rtb.Render(Mycanvas);
-            
+
             using (Stream stream = new FileStream(System.Environment.CurrentDirectory + @"\background.bmp", FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 PngBitmapEncoder encoder = new PngBitmapEncoder();
@@ -264,6 +263,7 @@ namespace MiniPaint
             }
             // 경로 
             // C:\Users\REDT_DEV\Desktop\work\그림판\코드리뷰\MiniPaint\MiniPaint\bin\Debug
+            */
             MessageBox.Show("이미지 저장 완료");
         }
 
@@ -359,7 +359,7 @@ namespace MiniPaint
                             border.BorderBrush = new VisualBrush(hilightRect);
                             //border.Width = hilightRect.Width;
                             //border.Height = hilightRect.Height;
-                            
+
                             tempborder = border;
 
                             Canvas.SetLeft(border, left);
@@ -368,9 +368,9 @@ namespace MiniPaint
                             border.MouseDown += shape_Click;
                             border.MouseMove += shape_Move;
                             border.MouseUp += shape_Released;
-                            
+
                             Mycanvas.Children.Remove(border);
-                            
+
                             tempRect = hilightRect;
                         }
                         break;
@@ -506,7 +506,7 @@ namespace MiniPaint
                             border.MouseUp += shape_Released;
 
                             Mycanvas.Children.Remove(border);
-                            
+
                             tempRect = hilightRect;
 
                             tempTxtBox = txtBox;
@@ -640,7 +640,7 @@ namespace MiniPaint
             else
             {
                 Point point = e.GetPosition(Mycanvas);
-                object obj = (UIElement) sender;
+                object obj = (UIElement)sender;
                 //Border sp = (Border)e.Source;
 
                 double offsetX = point.X - this.lastPoint.X;
@@ -778,7 +778,7 @@ namespace MiniPaint
         }*/
         #endregion
         #region 선 - 직선
-        private void CreateLine() 
+        private void CreateLine()
         {
             line = new Line();
             line.Stroke = preColor;
@@ -818,7 +818,7 @@ namespace MiniPaint
         }
         #endregion
         #region 캔버스
-        private void CreateCanvas() 
+        private void CreateCanvas()
         {
             cvs = new Canvas();
         }
@@ -851,17 +851,18 @@ namespace MiniPaint
         }
         #endregion
         #region 이미지
-        private void CreateImage(List<string> imgList) 
+        private void CreateImage(List<string> imgList)
         {
             for (int i = 0; i < imgList.Count; i++)
             {
                 Image image = new Image();
                 CreateBitmap(image, imgList[i]);
+                image.Stretch = Stretch.Uniform;
                 imgCtrolList.Add(image);
                 Mycanvas.Children.Add(image);
             }
         }
-        private void CreateBitmap(Image image, string imageList) 
+        private void CreateBitmap(Image image, string imageList)
         {
             BitmapImage img = new BitmapImage();
             img.BeginInit();
@@ -981,5 +982,34 @@ namespace MiniPaint
             }
         }
         #endregion
+        #region 비트맵 to 이미지 소스
+        private BitmapSource GetBitmapSourceFromBitmap(System.Drawing.Bitmap bitmap)
+        {
+            BitmapSource bitmapSource;
+
+            IntPtr hBitmap = bitmap.GetHbitmap();
+            BitmapSizeOptions sizeOptions = BitmapSizeOptions.FromEmptyOptions();
+            bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, sizeOptions);
+            bitmapSource.Freeze();
+
+            return bitmapSource;
+        }
+        #endregion;
+        private void savePNG(Canvas canvas) 
+        {
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)canvas.ActualWidth, (int)canvas.ActualHeight, 1270, 1270, PixelFormats.Default);
+            rtb.Render(canvas);
+
+            //PNG File 저장
+            using (Stream stream = new FileStream(System.Environment.CurrentDirectory + @"\background.png",
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None))
+            {
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(rtb));
+                encoder.Save(stream);
+            }
+        }
     }
 }
